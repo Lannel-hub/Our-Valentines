@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>For Tess ❤️</title>
+
+  <!-- Cute Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(to bottom right, #ffd6e8, #ffe6f2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .container {
+      max-width: 800px;
+      padding: 20px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 2.8em;
+      color: #ff4d88;
+    }
+
+    p {
+      font-size: 1.2em;
+      color: #444;
+    }
+
+    button {
+      padding: 12px 28px;
+      font-size: 18px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      margin: 10px;
+      transition: 0.3s;
+    }
+
+    .yes {
+      background-color: #ff4d88;
+      color: white;
+    }
+
+    .yes:hover {
+      background-color: #ff1a66;
+      transform: scale(1.05);
+    }
+
+    .no {
+      background-color: #cccccc;
+      position: absolute;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Gallery */
+
+    .gallery {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 25px 0;
+    }
+
+    .gallery img {
+      width: 220px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transition: 0.4s;
+      cursor: pointer;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+    }
+
+    /* Lightbox */
+
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      display: none;
+      z-index: 999;
+    }
+
+    .lightbox img {
+      max-width: 80%;
+      max-height: 80%;
+      border-radius: 20px;
+    }
+
+    .heart {
+      position: fixed;
+      top: -10px;
+      font-size: 20px;
+      animation: fall 5s linear infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" id="page1">
+  <h1>My Tess… 💕</h1>
+  <p>I made something for you.</p>
+  <button onclick="startExperience()">Click Me</button>
+</div>
+
+<div class="container hidden" id="page2">
+  <h1>From the moment I met you…</h1>
+  <p>You’ve made my world brighter, softer, and way more fun.</p>
+
+  <div class="gallery">
+    <img src="images/photo1.jpg" onclick="openLightbox(this.src)">
+    <img src="images/photo2.jpg" onclick="openLightbox(this.src)">
+    <img src="images/photo3.jpg" onclick="openLightbox(this.src)">
+  </div>
+
+  <button onclick="nextPage()">Okay… but why?</button>
+</div>
+
+<div class="container hidden" id="page3">
+  <h1>So Tess…</h1>
+  <p style="font-size: 1.5em;">Will you be my Valentine? ❤️</p>
+  <button class="yes" onclick="yesClicked()">YES 💖</button>
+  <button class="no" id="noButton">No</button>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg">
+</div>
+
+<script>
+const music = document.getElementById("bgMusic");
+
+/* Start Experience */
+function startExperience() {
+  music.play();
+  document.getElementById('page1').classList.add('hidden');
+  document.getElementById('page2').classList.remove('hidden');
+  startFloatingHearts();
+  typeMessage();
+}
+
+/* Page Transition */
+function nextPage() {
+  document.getElementById('page2').classList.add('hidden');
+  document.getElementById('page3').classList.remove('hidden');
+}
+
+/* YES Click */
+function yesClicked() {
+  document.getElementById('page3').innerHTML = `
+    <h1>You just make me the happiest person alive 💕</h1>
+    <p style="font-size:1.4em;">Our date is officially happening...</p>
+    <h2 style="color:#ff4d88;">Saturday, 7PM 🌹</h2>
+    <div id="countdown" style="font-size:2em; margin-top:20px; color:#ff1a66;"></div>
+    <p>Dinner. Us. No phones. Just you and me.</p>
+    <p>I Love You Omwanchi😘</p>
+  `;
+
+  createHearts();
+  startCountdown();
+}
+function startCountdown() {
+
+  // ⚠️ CHANGE THIS DATE TO YOUR ACTUAL DATE
+  const date = new Date("February 14, 2026 19:00:00").getTime();
+
+  const timer = setInterval(function() {
+
+    const now = new Date().getTime();
+    const distance = date - now;
+
+    if (distance < 0) {
+      clearInterval(timer);
+      document.getElementById("countdown").innerHTML = "It's date time ❤️";
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("countdown").innerHTML =
+      days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+  }, 1000);
+}
+
+
+/* Moving NO button */
+const noButton = document.getElementById("noButton");
+
+noButton.addEventListener("mouseover", function() {
+  const x = Math.random() * (window.innerWidth - 100);
+  const y = Math.random() * (window.innerHeight - 50);
+  noButton.style.left = x + "px";
+  noButton.style.top = y + "px";
+});
+
+/* Typing Effect */
+function typeMessage() {
+  const text = "You’ve make my world brighter, softer, and way more fun.";
+  const paragraph = document.querySelector("#page2 p");
+  paragraph.innerHTML = "";
+  let i = 0;
+
+  function typing() {
+    if (i < text.length) {
+      paragraph.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typing, 40);
+    }
+  }
+
+  typing();
+}
+
+/* Constant Floating Hearts */
+function startFloatingHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "💗";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = Math.random() * 15 + 10 + "px";
+    heart.style.opacity = Math.random();
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 5000);
+  }, 800);
+}
+
+/* Celebration Hearts */
+function createHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = Math.random() * 25 + 15 + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 5000);
+  }, 200);
+}
+
+/* Lightbox */
+function openLightbox(src) {
+  document.getElementById("lightbox").style.display = "flex";
+  document.getElementById("lightboxImg").src = src;
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").style.display = "none";
+}
+</script>
+
+
+</body>
+</html>
